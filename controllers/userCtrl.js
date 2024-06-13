@@ -2,11 +2,9 @@ const bcrypt = require('bcrypt');
 
 exports.signup = async (req, res, client) => {
   try {
-    console.log(req.body.password)
     // Hachage du mot de passe
     const saltRounds = 10;
     const hashedPassword = await bcrypt.hash(req.body.password, saltRounds);
-    console.log('Hashed Password:', hashedPassword);
     
     // Création d'un nouveau utilisateur
     const query = {
@@ -31,7 +29,7 @@ exports.login = async (req, res, client) => {
       text: 'SELECT * FROM users WHERE username = $1',
       values: [username],
     };
-    
+
     const result = await client.query(query);
 
     if (result.rows.length === 0) {
@@ -48,7 +46,7 @@ exports.login = async (req, res, client) => {
       return res.status(401).json({ error: 'Invalid password' });
     }
     // Si l'utilisateur est trouvé et le mot de passe est correct
-    res.status(200).json({ message: 'Login successful' });
+    res.status(200).json({ user: user });
 
   } catch (error) {
     console.error('Login Error:', error);
